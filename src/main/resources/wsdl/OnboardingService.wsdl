@@ -1,0 +1,3754 @@
+<wsdl:definitions
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:tns="http://onboarding.webservices.ifcs.fal.co.nz/onboarding"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:ns1="http://schemas.xmlsoap.org/soap/http"
+	name="OnboardingServiceImplService"
+	targetNamespace="http://onboarding.webservices.ifcs.fal.co.nz/onboarding">
+	<wsdl:types>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:ns1="http://webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://workqueue.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="workQueue">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="clientMid" type="xs:long" />
+							<xs:element name="externalCode" type="xs:string" />
+							<xs:element name="description" type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:tns="http://webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://webservices.ifcs.fal.co.nz/" version="1.0">
+			<xs:complexType abstract="true"
+				name="baseTransferObject">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="applicationStatus"
+						type="tns:applicationStatus" />
+					<xs:element minOccurs="0" name="user" type="xs:string" />
+					<xs:element minOccurs="0" name="localeLanguage"
+						type="xs:string" />
+					<xs:element minOccurs="0" name="localeCountry"
+						type="xs:string" />
+					<xs:element default="false" minOccurs="0"
+						name="deleteMe" type="xs:boolean" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="applicationStatus">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="message"
+						type="xs:string" />
+					<xs:element name="statusNumber" type="xs:long" />
+					<xs:element minOccurs="0" name="isErrorCode"
+						type="xs:boolean" />
+					<xs:element maxOccurs="unbounded" minOccurs="0"
+						name="errorField" nillable="true" type="tns:errorFieldDTO" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="errorFieldDTO">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="fieldName"
+						type="xs:string" />
+					<xs:element minOccurs="0" name="fieldStatusNumber"
+						type="xs:long" />
+					<xs:element minOccurs="0" name="fieldStatusMessage"
+						type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="dataPageRequest">
+				<xs:complexContent>
+					<xs:extension base="tns:baseTransferObject">
+						<xs:sequence>
+							<xs:element default="0" minOccurs="0" name="pageSize"
+								type="xs:int" />
+							<xs:element default="1" minOccurs="0"
+								name="pageNumber" type="xs:int" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="entitySpecification">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="name" type="xs:string" />
+					<xs:element minOccurs="0" name="entityType"
+						type="xs:string" />
+					<xs:element maxOccurs="unbounded" minOccurs="0"
+						name="entitySpecCharacteristic" nillable="true"
+						type="tns:entitySpecCharacteristic" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="entitySpecCharacteristic">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="characteristic"
+						type="xs:string" />
+					<xs:element minOccurs="0" name="characteristicValue"
+						type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="oidDescription">
+				<xs:simpleContent>
+					<xs:extension base="tns:lookupObjects" />
+				</xs:simpleContent>
+			</xs:complexType>
+			<xs:simpleType name="lookupObjects">
+				<xs:restriction base="xs:string" />
+			</xs:simpleType>
+			<xs:complexType name="didDescription">
+				<xs:simpleContent>
+					<xs:extension base="tns:lookupObjects" />
+				</xs:simpleContent>
+			</xs:complexType>
+			<xs:complexType name="Member">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="customerIds"
+						type="xs:long" />
+					<xs:element minOccurs="0" name="memberId" type="xs:long" />
+					<xs:element minOccurs="0" name="memberIds"
+						type="xs:long" />
+					<xs:element minOccurs="0" name="memberTypeId"
+						type="xs:long" />
+					<xs:element minOccurs="0" name="merchantIds"
+						type="xs:long" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="Place">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="placeId" type="xs:int" />
+					<xs:element minOccurs="0" name="name" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:simpleType name="memberType">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="system" />
+					<xs:enumeration value="client" />
+					<xs:enumeration value="clientGroup" />
+					<xs:enumeration value="merchant" />
+					<xs:enumeration value="customer" />
+					<xs:enumeration value="location" />
+					<xs:enumeration value="locationGroup" />
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType name="cardType">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="vehicle" />
+					<xs:enumeration value="driver" />
+					<xs:enumeration value="open" />
+					<xs:enumeration value="dualVehicle" />
+					<xs:enumeration value="dualDriver" />
+					<xs:enumeration value="affinity" />
+					<xs:enumeration value="coBrandedInternal" />
+					<xs:enumeration value="coBrandedExternal" />
+					<xs:enumeration value="temporary" />
+					<xs:enumeration value="instore" />
+					<xs:enumeration value="storedValue" />
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType name="feeType">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="card" />
+					<xs:enumeration value="account" />
+					<xs:enumeration value="merchant" />
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType name="creditCardType">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="visa" />
+					<xs:enumeration value="master" />
+					<xs:enumeration value="amex" />
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType name="TotalCategory">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="NON_FINANCIAL" />
+					<xs:enumeration value="DOMESTIC_FINANCIAL" />
+					<xs:enumeration value="INTERNATIONAL_FINANCIAL" />
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType name="TransactionRebateType">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="INCLUDE_ALL" />
+					<xs:enumeration value="EXCLUDE_PUMP_PRICE" />
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType name="pinActionType">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="PIN_ACTION_USER_ENTERED_PIN" />
+					<xs:enumeration value="PIN_ACTION_REMOVE_PIN" />
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType name="pinOptionType">
+				<xs:restriction base="xs:string">
+					<xs:enumeration
+						value="PIN_OPTION_LOWEST_LEVEL_CUST_PIN" />
+					<xs:enumeration
+						value="PIN_OPTION_INDIVIDUAL_CARD_PIN" />
+					<xs:enumeration
+						value="PIN_OPTION_TOP_LEVEL_CUST_PIN" />
+					<xs:enumeration value="PIN_OPTION_NOT_DEFAULTED" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:ns3="http://contact.webservices.ifcs.fal.co.nz/"
+			xmlns:ns2="http://address.webservices.ifcs.fal.co.nz/"
+			xmlns:ns1="http://webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://taxnumbers.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://address.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://contact.webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="taxNumbers">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="countryCode" type="xs:string" />
+							<xs:element name="taxNo" type="xs:string" />
+							<xs:element name="memberNo" type="xs:string" />
+							<xs:element name="memberTypeDescription"
+								type="ns1:oidDescription" />
+							<xs:element name="effectiveOn" type="xs:date" />
+							<xs:element name="expiresOn" type="xs:date" />
+							<xs:element name="taxTypeDescription"
+								type="ns1:oidDescription" />
+							<xs:element name="taxNoRegTypeDescription"
+								type="ns1:oidDescription" />
+							<xs:element minOccurs="0" name="isRecoveryByAgency"
+								type="xs:boolean" />
+							<xs:element name="country" type="ns2:country" />
+							<xs:element minOccurs="0" name="contact"
+								type="ns3:contact" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="taxStatus">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="taxTypeDescription" type="xs:string" />
+							<xs:element name="statusDescription" type="xs:string" />
+							<xs:element name="statusExternalCode" type="xs:string" />
+							<xs:element name="effectiveOn" type="xs:date" />
+							<xs:element minOccurs="0" name="expiresOn"
+								type="xs:date" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:ns2="http://profile.webservices.ifcs.fal.co.nz/"
+			xmlns:ns1="http://webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://subscription.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://profile.webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="subscription">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="clientMid" type="xs:long" />
+							<xs:element name="clientName" type="xs:string" />
+							<xs:element name="descriptionExternalCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="feeDescription"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="customerNumber"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="accountNumber"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="cardNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="defaultCardNo"
+								type="xs:string" />
+							<xs:element name="effectiveOn" type="xs:date" />
+							<xs:element name="expiresOn" type="xs:date" />
+							<xs:element minOccurs="0" name="isPostPaid"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isOptIn"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="creditLimit"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="tollAccount"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="cardProduct"
+								type="ns2:cardProduct" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="entitySpecification" nillable="true"
+								type="ns1:entitySpecification" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:ns1="http://webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://report.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="reportAssignment">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="reportTypeDescription"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="frequencyDescription"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="deliveryTypeDescription" type="xs:string" />
+							<xs:element minOccurs="0" name="createdOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="lastReportedOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="previousReportedOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="isPullCodeUsed"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isEnabled"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isAdhocReport"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isInternetUser"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isCardDetailsRequired"
+								type="xs:boolean" />
+							<xs:element minOccurs="0"
+								name="isAttachmentCompressed" type="xs:boolean" />
+							<xs:element minOccurs="0"
+								name="contactHierarchyDescription" type="xs:string" />
+							<xs:element minOccurs="0" name="description"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="emailAddress"
+								type="xs:string" />
+							<xs:element name="memberType" type="xs:string" />
+							<xs:element minOccurs="0" name="feeDescription"
+								type="ns1:oidDescription" />
+							<xs:element minOccurs="0" name="sortOptionDescription"
+								type="ns1:oidDescription" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:tns="http://rebate.webservices.ifcs.fal.co.nz/"
+			xmlns:ns1="http://webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://rebate.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="rebate">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="description" type="xs:string" />
+							<xs:element name="rebateCategoryDesc" type="xs:string" />
+							<xs:element minOccurs="0" name="effectiveOn"
+								type="xs:date" />
+							<xs:element name="expiresOn" type="xs:date" />
+							<xs:element name="productName" type="xs:string" />
+							<xs:element name="productGroupName" type="xs:string" />
+							<xs:element name="productGroupTypeDescription"
+								type="xs:string" />
+							<xs:element name="externalClientCode" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="thirdPartyCustomerNumber" type="xs:string" />
+							<xs:element name="memberType" type="xs:string" />
+							<xs:element name="memberNo" type="xs:string" />
+							<xs:element name="currentClientMid" type="xs:long" />
+							<xs:element name="currentClientName" type="xs:string" />
+							<xs:element minOccurs="0" name="merchAgrmntValue"
+								type="tns:merchAgrmntValue" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="rebateValues" nillable="true" type="tns:rebateValue" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="rebateContributions" nillable="true"
+								type="tns:rebateContribution" />
+							<xs:element minOccurs="0"
+								name="currentCardProgramDescription" type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="merchAgrmntValue">
+				<xs:sequence>
+					<xs:element name="description" type="xs:string" />
+					<xs:element name="externalCode" type="xs:string" />
+					<xs:element minOccurs="0" name="merchAgrmntValueType"
+						type="tns:merchAgrmntValueType" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="merchAgrmntValueType">
+				<xs:sequence>
+					<xs:element name="description" type="xs:string" />
+					<xs:element name="merchAgrmntValueNo" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="rebateValue">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="rate" type="xs:decimal" />
+							<xs:element name="valueRangeFrom" type="xs:decimal" />
+							<xs:element name="valueRangeTo" type="xs:decimal" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="rebateContribution">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="memberType" type="xs:string" />
+							<xs:element name="memberNo" type="xs:string" />
+							<xs:element name="percentage" type="xs:decimal" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="rebateValues">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0"
+						name="rebateValue" nillable="true" type="tns:rebateValue" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="rebateContributions">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0"
+						name="rebateContribution" nillable="true"
+						type="tns:rebateContribution" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:tns="http://profile.webservices.ifcs.fal.co.nz/"
+			xmlns:ns4="http://webservices.ifcs.fal.co.nz/"
+			xmlns:ns3="http://pricing.webservices.ifcs.fal.co.nz/"
+			xmlns:ns2="http://identity.webservices.ifcs.fal.co.nz/"
+			xmlns:ns1="http://rebate.webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://profile.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import
+				namespace="http://rebate.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://identity.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://pricing.webservices.ifcs.fal.co.nz/" />
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="profileContainer">
+				<xs:complexContent>
+					<xs:extension base="ns4:baseTransferObject">
+						<xs:sequence>
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="rebateProfiles" nillable="true" type="tns:rebateProfile" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="pricingProfiles" nillable="true" type="tns:pricingProfile" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="feeProfiles" nillable="true" type="tns:feeProfile" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="cardControlProfiles" nillable="true"
+								type="tns:cardControlProfile" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="cardReissueProfiles" nillable="true"
+								type="tns:cardReissueProfile" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="accountControlProfiles" nillable="true"
+								type="tns:accountControlProfile" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="rebateProfile">
+				<xs:complexContent>
+					<xs:extension base="tns:profile">
+						<xs:sequence>
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="rebates" nillable="true" type="ns1:rebate" />
+							<xs:element name="rebateUser" type="ns2:internetUser" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="profile">
+				<xs:complexContent>
+					<xs:extension base="ns4:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="description" type="xs:string" />
+							<xs:element minOccurs="0" name="effectiveOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="expiresOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="isDefault"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="clientName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="clientMid"
+								type="xs:long" />
+							<xs:element minOccurs="0"
+								name="cardProgramDescription" type="xs:string" />
+							<xs:element minOccurs="0" name="cardProgramOid"
+								type="xs:long" />
+							<xs:element minOccurs="0"
+								name="applicationTypeDescription" type="xs:string" />
+							<xs:element minOccurs="0" name="applicationTypeOid"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="applicationNumber"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="applicationOid"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="customerNumber"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="customerMid"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="cardNumber"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="cardMid"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="merchantNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="merchantOid"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="pricingProfile">
+				<xs:complexContent>
+					<xs:extension base="tns:profile">
+						<xs:sequence>
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="pricingControls" nillable="true" type="ns3:pricingControl" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="cardReissueProfile">
+				<xs:complexContent>
+					<xs:extension base="tns:profile">
+						<xs:sequence>
+							<xs:element minOccurs="0"
+								name="cardReissueConfirmMonth" type="xs:long" />
+							<xs:element minOccurs="0" name="cardReissueOnDays"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="cardReissueActiveDays"
+								type="xs:long" />
+							<xs:element minOccurs="0"
+								name="cardReissueOverrideExclusion" type="xs:string" />
+							<xs:element minOccurs="0" name="isAutoReissue"
+								type="xs:boolean" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="cardControlProfile">
+				<xs:complexContent>
+					<xs:extension base="tns:profile">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="cardOfferDescription"
+								type="ns4:oidDescription" />
+							<xs:element minOccurs="0" name="cardProduct"
+								type="tns:cardProduct" />
+							<xs:element minOccurs="0" name="cardControl"
+								type="tns:cardControl" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="cardProduct">
+				<xs:complexContent>
+					<xs:extension base="ns4:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="cardOfferDescription"
+								type="ns4:oidDescription" />
+							<xs:element minOccurs="0"
+								name="applicationTypeDescription" type="ns4:oidDescription" />
+							<xs:element minOccurs="0" name="cardType"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="cardProductDescription" type="ns4:oidDescription" />
+							<xs:element minOccurs="0" name="plasticCode"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="cardControl">
+				<xs:complexContent>
+					<xs:extension base="ns4:baseTransferObject">
+						<xs:sequence>
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="velocityTypeValues" nillable="true"
+								type="tns:velocityTypeValue" />
+							<xs:element minOccurs="0"
+								name="extVelocityProfileNumber" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="externalVelocityCardProfileVO"
+								type="tns:externalVelocityCardProfile" />
+							<xs:element minOccurs="0"
+								name="productRestrictionDesc" type="ns4:oidDescription" />
+							<xs:element minOccurs="0"
+								name="productRestrictionCode" type="ns4:oidDescription" />
+							<xs:element minOccurs="0"
+								name="productRestrictionCardOfferDesc" type="xs:string" />
+							<xs:element minOccurs="0" name="timeLimitDesc"
+								type="ns4:oidDescription" />
+							<xs:element minOccurs="0" name="timeLimitCode"
+								type="ns4:oidDescription" />
+							<xs:element minOccurs="0"
+								name="locationRestrictionOid" type="xs:long" />
+							<xs:element minOccurs="0"
+								name="locationRestrictionType" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="locationRestrictionDescription" type="ns4:oidDescription" />
+							<xs:element minOccurs="0" name="isErrorProdRestColl"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isErrorProdRestAuth"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isErrorTimeLimitColl"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isErrorTimeLimitAuth"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isErrorLocRestricColl"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isErrorLocRestricAuth"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isVehicleIdReq"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isOrderNumberReq"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isDriverIdReq"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isFleetIdReq"
+								type="xs:boolean" />
+							<xs:element minOccurs="0"
+								name="isCustomerSelectionReq" type="xs:boolean" />
+							<xs:element minOccurs="0" name="isOdometerReq"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isOdometerValidation"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isPosPinChangeAllowed"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="effectiveOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="expiresOn"
+								type="xs:date" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="velocityTypeValue">
+				<xs:complexContent>
+					<xs:extension base="ns4:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="typeColumnName" type="xs:string" />
+							<xs:element name="description" type="xs:string" />
+							<xs:element name="isErrorTypeAuth" type="xs:boolean" />
+							<xs:element name="isErrorTypeCollect"
+								type="xs:boolean" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="externalVelocityCardProfile">
+				<xs:complexContent>
+					<xs:extension base="ns4:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="profileNumber"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="feeProfile">
+				<xs:complexContent>
+					<xs:extension base="tns:profile">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="cardOfferDescription"
+								type="ns4:oidDescription" />
+							<xs:element minOccurs="0" name="cardType"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="feeType"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="cardProduct"
+								type="tns:cardProduct" />
+							<xs:element minOccurs="0" name="cardFeeControl"
+								type="tns:cardFeeControl" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="cardFeeControl">
+				<xs:complexContent>
+					<xs:extension base="ns4:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="cardIssueFeeVO"
+								type="tns:feeControl" />
+							<xs:element minOccurs="0" name="periodicCardFeeVO1"
+								type="tns:feeControl" />
+							<xs:element minOccurs="0" name="periodicCardFeeVO2"
+								type="tns:feeControl" />
+							<xs:element minOccurs="0" name="periodicCardFeeVO3"
+								type="tns:feeControl" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="feeControl">
+				<xs:complexContent>
+					<xs:extension base="ns4:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="feeDescription"
+								type="ns4:oidDescription" />
+							<xs:element minOccurs="0" name="msfDescription"
+								type="ns4:oidDescription" />
+							<xs:element minOccurs="0" name="initialDelayMonths"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="isFeeCharged"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="applyMonths"
+								type="xs:long" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="accountControlProfile">
+				<xs:complexContent>
+					<xs:extension base="tns:profile">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="accountControl"
+								type="tns:accountControl" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="accountControl">
+				<xs:complexContent>
+					<xs:extension base="ns4:baseTransferObject">
+						<xs:sequence>
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="velocityTypeValues" nillable="true"
+								type="tns:velocityTypeValue" />
+							<xs:element minOccurs="0"
+								name="extVelocityProfileNumber" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="externalVelocityCardProfileVO"
+								type="tns:externalVelocityCardProfile" />
+							<xs:element minOccurs="0"
+								name="locationRestrictionOid" type="xs:long" />
+							<xs:element minOccurs="0"
+								name="locationRestrictionType" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="locationRestrictionDescription" type="ns4:oidDescription" />
+							<xs:element minOccurs="0" name="isErrorProdRestColl"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isErrorProdRestAuth"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isErrorTimeLimtColl"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isErrorTimeLimtAuth"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isErrorLocRestricColl"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isErrorLocRestricAuth"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isVehicleIdReq"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isOrderNumberReq"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isDriverIdReq"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isFleetIdReq"
+								type="xs:boolean" />
+							<xs:element minOccurs="0"
+								name="isCustomerSelectionReq" type="xs:boolean" />
+							<xs:element minOccurs="0" name="isOdometerReq"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isOdometerValidation"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isPosPinChangeAllowed"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="effectiveOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="expiresOn"
+								type="xs:date" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="defaultPricingProfile">
+				<xs:complexContent>
+					<xs:extension base="ns4:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="clientName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="clientMid"
+								type="xs:long" />
+							<xs:element minOccurs="0"
+								name="merchantAgreementValueNo" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="merchantAgreementValueDescription" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="merchantAgreementValueTypeDescription" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="productGroupDescription" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="productGroupTypeDescription" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="productGroupExternalClientCode" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="cardProductGroupDescription" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="cardProductGroupExternalCode" type="xs:string" />
+							<xs:element minOccurs="0" name="pricingProfile"
+								type="tns:pricingProfile" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="rebateProfiles">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0"
+						name="rebateProfile" nillable="true" type="tns:rebateProfile" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:simpleType name="typeColumnName">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="velocity_type_value_1_oid" />
+					<xs:enumeration value="velocity_type_value_2_oid" />
+					<xs:enumeration value="velocity_type_value_3_oid" />
+					<xs:enumeration value="velocity_type_value_4_oid" />
+					<xs:enumeration value="velocity_type_value_5_oid" />
+					<xs:enumeration value="velocity_type_value_6_oid" />
+					<xs:enumeration value="velocity_type_value_7_oid" />
+					<xs:enumeration value="velocity_type_value_8_oid" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			elementFormDefault="qualified"
+			targetNamespace="http://pricing.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:complexType name="pricingControl">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="productId"
+						type="xs:long" />
+					<xs:element minOccurs="0" name="productDesc"
+						type="xs:string" />
+					<xs:element minOccurs="0" name="pricingSchemeId"
+						type="xs:long" />
+					<xs:element minOccurs="0" name="pricingSchemeDesc"
+						type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:tns="http://onboarding.webservices.ifcs.fal.co.nz/onboarding"
+			xmlns:ns9="http://report.webservices.ifcs.fal.co.nz/"
+			xmlns:ns8="http://merchant.webservices.ifcs.fal.co.nz/"
+			xmlns:ns7="http://hierarchy.webservices.ifcs.fal.co.nz/"
+			xmlns:ns6="http://account.webservices.ifcs.fal.co.nz/"
+			xmlns:ns5="http://profile.webservices.ifcs.fal.co.nz/"
+			xmlns:ns4="http://identity.webservices.ifcs.fal.co.nz/"
+			xmlns:ns3="http://location.webservices.ifcs.fal.co.nz/"
+			xmlns:ns2="http://webservices.ifcs.fal.co.nz/"
+			xmlns:ns16="http://taxnumbers.webservices.ifcs.fal.co.nz/"
+			xmlns:ns15="http://subscription.webservices.ifcs.fal.co.nz/"
+			xmlns:ns14="http://diarynotes.webservices.ifcs.fal.co.nz/"
+			xmlns:ns13="http://card.webservices.ifcs.fal.co.nz/"
+			xmlns:ns12="http://contact.webservices.ifcs.fal.co.nz/"
+			xmlns:ns11="http://financial.webservices.ifcs.fal.co.nz/"
+			xmlns:ns10="http://application.webservices.ifcs.fal.co.nz/"
+			xmlns:ns1="http://address.webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://onboarding.webservices.ifcs.fal.co.nz/onboarding"
+			version="1.0">
+			<xs:import
+				namespace="http://address.webservices.ifcs.fal.co.nz/" />
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://location.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://identity.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://profile.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://account.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://hierarchy.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://merchant.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://report.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://application.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://financial.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://contact.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://card.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://diarynotes.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://subscription.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://taxnumbers.webservices.ifcs.fal.co.nz/" />
+			<xs:element name="uploadAccountStatistics"
+				type="tns:uploadAccountStatistics" />
+			<xs:element name="uploadAccountStatisticsResponse"
+				type="tns:uploadAccountStatisticsResponse" />
+			<xs:element name="uploadApprovedApplication"
+				type="tns:uploadApprovedApplication" />
+			<xs:element name="uploadApprovedApplicationResponse"
+				type="tns:uploadApprovedApplicationResponse" />
+			<xs:element name="uploadInternetUser"
+				type="tns:uploadInternetUser" />
+			<xs:element name="uploadInternetUserResponse"
+				type="tns:uploadInternetUserResponse" />
+			<xs:element name="uploadInvoicePayment"
+				type="tns:uploadInvoicePayment" />
+			<xs:element name="uploadInvoicePaymentResponse"
+				type="tns:uploadInvoicePaymentResponse" />
+			<xs:element name="uploadLocation"
+				type="tns:uploadLocation" />
+			<xs:element name="uploadLocationResponse"
+				type="tns:uploadLocationResponse" />
+			<xs:element name="uploadMerchant"
+				type="tns:uploadMerchant" />
+			<xs:element name="uploadMerchantAgreement"
+				type="tns:uploadMerchantAgreement" />
+			<xs:element name="uploadMerchantAgreementResponse"
+				type="tns:uploadMerchantAgreementResponse" />
+			<xs:element name="uploadMerchantResponse"
+				type="tns:uploadMerchantResponse" />
+			<xs:element name="uploadPeriodBalance"
+				type="tns:uploadPeriodBalance" />
+			<xs:element name="uploadPeriodBalanceResponse"
+				type="tns:uploadPeriodBalanceResponse" />
+			<xs:element name="uploadProfile" type="tns:uploadProfile" />
+			<xs:element name="uploadProfileResponse"
+				type="tns:uploadProfileResponse" />
+			<xs:element name="uploadRebateOutOption"
+				type="tns:uploadRebateOutOption" />
+			<xs:element name="uploadRebateOutOptionResponse"
+				type="tns:uploadRebateOutOptionResponse" />
+			<xs:element name="uploadSubscription"
+				type="tns:uploadSubscription" />
+			<xs:element name="uploadSubscriptionResponse"
+				type="tns:uploadSubscriptionResponse" />
+			<xs:complexType name="uploadLocation">
+				<xs:sequence>
+					<xs:element name="location" type="ns3:location" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadLocationResponse">
+				<xs:sequence>
+					<xs:element name="return" type="ns3:location" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadInternetUser">
+				<xs:sequence>
+					<xs:element name="internetUser" type="ns4:internetUser" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadInternetUserResponse">
+				<xs:sequence>
+					<xs:element name="return" type="ns4:internetUser" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadProfile">
+				<xs:sequence>
+					<xs:element name="profileContainer"
+						type="ns5:profileContainer" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadProfileResponse">
+				<xs:sequence>
+					<xs:element name="return" type="ns5:profileContainer" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadMerchantAgreement">
+				<xs:sequence>
+					<xs:element name="merchantAgreement"
+						type="ns8:merchantAgreement" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadMerchantAgreementResponse">
+				<xs:sequence>
+					<xs:element name="return" type="ns8:merchantAgreement" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadRebateOutOption">
+				<xs:sequence>
+					<xs:element name="rebateOptInOut"
+						type="ns10:rebateOptInOut" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadRebateOutOptionResponse">
+				<xs:sequence>
+					<xs:element name="return" type="ns10:rebateOptInOut" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadPeriodBalance">
+				<xs:sequence>
+					<xs:element name="periodBalance"
+						type="ns11:periodBalance" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadPeriodBalanceResponse">
+				<xs:sequence>
+					<xs:element name="return" type="ns11:periodBalance" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadAccountStatistics">
+				<xs:sequence>
+					<xs:element name="accountStatistics"
+						type="ns11:accountStatistics" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadAccountStatisticsResponse">
+				<xs:sequence>
+					<xs:element name="return" type="ns11:accountStatistics" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadMerchant">
+				<xs:sequence>
+					<xs:element name="merchant" type="ns8:merchant" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadMerchantResponse">
+				<xs:sequence>
+					<xs:element name="return" type="ns8:merchant" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadApprovedApplication">
+				<xs:sequence>
+					<xs:element name="application"
+						type="ns10:applicationWithAdditionalInfo" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType
+				name="uploadApprovedApplicationResponse">
+				<xs:sequence>
+					<xs:element name="return"
+						type="ns10:applicationWithAdditionalInfo" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadInvoicePayment">
+				<xs:sequence>
+					<xs:element name="detailGroup" type="ns11:detailGroup" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadInvoicePaymentResponse">
+				<xs:sequence>
+					<xs:element name="return" type="ns11:detailGroup" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadSubscription">
+				<xs:sequence>
+					<xs:element name="subscription" type="ns15:subscription" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="uploadSubscriptionResponse">
+				<xs:sequence>
+					<xs:element name="return" type="ns15:subscription" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:tns="http://merchant.webservices.ifcs.fal.co.nz/"
+			xmlns:ns8="http://contact.webservices.ifcs.fal.co.nz/"
+			xmlns:ns7="http://address.webservices.ifcs.fal.co.nz/"
+			xmlns:ns6="http://pricing.webservices.ifcs.fal.co.nz/"
+			xmlns:ns5="http://webservices.ifcs.fal.co.nz/"
+			xmlns:ns4="http://profile.webservices.ifcs.fal.co.nz/"
+			xmlns:ns3="http://report.webservices.ifcs.fal.co.nz/"
+			xmlns:ns2="http://hierarchy.webservices.ifcs.fal.co.nz/"
+			xmlns:ns1="http://account.webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://merchant.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import
+				namespace="http://account.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://hierarchy.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://report.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://profile.webservices.ifcs.fal.co.nz/" />
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://pricing.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://address.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://contact.webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="merchantAgreement">
+				<xs:complexContent>
+					<xs:extension base="ns5:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="apAccountCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="bankAccount"
+								type="ns1:bankAccount" />
+							<xs:element minOccurs="0" name="bankType"
+								type="xs:string" />
+							<xs:element name="clientMid" type="xs:long" />
+							<xs:element name="clientName" type="xs:string" />
+							<xs:element minOccurs="0" name="contraAccountCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="effectiveOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="expiresOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="frequencyDesc"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="hierarchy"
+								type="ns2:hierarchy" />
+							<xs:element minOccurs="0" name="isDebitAuthorised"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isPrivatelyOwned"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isSameDaySettle"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="locationNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="merchantNo"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="merchantPaymentTypeDescription" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="merchantAgreementValue1" type="tns:merchantAgreementValue" />
+							<xs:element minOccurs="0"
+								name="merchantAgreementValue2" type="tns:merchantAgreementValue" />
+							<xs:element minOccurs="0"
+								name="merchantAgreementValue3" type="tns:merchantAgreementValue" />
+							<xs:element minOccurs="0" name="taxNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="taxType"
+								type="xs:string" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="pricingLogs" nillable="true" type="tns:merchantPricingLog" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="reportAssignments" nillable="true"
+								type="ns3:reportAssignment" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="merchantAgreementValue">
+				<xs:complexContent>
+					<xs:extension base="ns5:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0"
+								name="merchantAgreementValueTypeNo" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="merchantAgreementValueTypeDescription" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="merchantAgreementValueDescription" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="merchantAgreementValueExternalCode" type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="merchantPricingLog">
+				<xs:complexContent>
+					<xs:extension base="ns5:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="effectiveOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="expiresOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="isRepricingRequired"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="pricingProfile"
+								type="ns4:pricingProfile" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="merchant">
+				<xs:complexContent>
+					<xs:extension base="tns:merchantDTO">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="clientName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="languageDescription"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="postalAddress"
+								type="ns7:address" />
+							<xs:element minOccurs="0" name="streetAddress"
+								type="ns7:address" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="contacts" nillable="true" type="ns8:contact" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="merchantDTO">
+				<xs:complexContent>
+					<xs:extension base="ns5:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="clientMid" type="xs:long" />
+							<xs:element minOccurs="0" name="manualEntryMerchantNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="paidOn" type="xs:date" />
+							<xs:element minOccurs="0"
+								name="merchantTypeDescription" type="ns5:didDescription" />
+							<xs:element minOccurs="0" name="merchantNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="createdOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="tradingName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="externalCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="businessCommencedOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="countryCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="languageCode"
+								type="ns5:oidDescription" />
+							<xs:element minOccurs="0" name="name" type="xs:string" />
+							<xs:element minOccurs="0" name="isWebAccessRequired"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="emailAddress"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="phoneBusiness"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="phoneFax"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="phoneMobile1"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="phoneMobile2"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="taxNo"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="adminTerritoryDescription" type="ns5:oidDescription" />
+							<xs:element minOccurs="0"
+								name="marketingTerritoryDescription" type="ns5:oidDescription" />
+							<xs:element minOccurs="0" name="glChannelDescription"
+								type="ns5:didDescription" />
+							<xs:element minOccurs="0" name="glCostCentreCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="currencyCode"
+								type="ns5:oidDescription" />
+							<xs:element minOccurs="0" name="pullCodeDescription"
+								type="ns5:didDescription" />
+							<xs:element minOccurs="0" name="custServiceExpiresOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="custServicePullInits"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="accountNo"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="channelOfTradeDescription" type="ns5:didDescription" />
+							<xs:element minOccurs="0" name="contactName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="contactTitle"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="isUsingElectronicReporting" type="xs:boolean" />
+							<xs:element minOccurs="0"
+								name="isUsingElectronicMarketing" type="xs:boolean" />
+							<xs:element minOccurs="0" name="streetAddressVO"
+								type="ns7:addressDTO" />
+							<xs:element minOccurs="0" name="postalAddressVO"
+								type="ns7:addressDTO" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="hierarchies" nillable="true" type="ns2:hierarchy" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="merchantAgreements">
+				<xs:complexContent>
+					<xs:extension base="ns5:baseTransferObject">
+						<xs:sequence>
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="merchantAgreement" nillable="true"
+								type="tns:merchantAgreement" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:ns2="http://webservices.ifcs.fal.co.nz/"
+			xmlns:ns1="http://address.webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://location.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import
+				namespace="http://address.webservices.ifcs.fal.co.nz/" />
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="location">
+				<xs:complexContent>
+					<xs:extension base="ns2:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0"
+								name="adminTerritoryDescription" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="businessHoursDescription" type="xs:string" />
+							<xs:element minOccurs="0" name="clientName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="clientMid"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="closedOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="contactName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="contactTitle"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="createdOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="emailAddress"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="externalCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="externalName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="financialYearEndMonth"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="geographicArea1"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="geographicArea2"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="geographicArea3"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="geographicArea4"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="geographicArea5"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="geographicAreaType1"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="geographicAreaType2"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="geographicAreaType3"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="geographicAreaType4"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="geographicAreaType5"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="ispAccountNumber"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="isEftposAvailable"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isFuelRebateAllowed"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isWebAccessRequired"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="languageCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="languageDescription"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="locationMid"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="locationNo"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="locationStatusDescription" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="locationTypeDescription" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="marketingTerritoryDescription" type="xs:string" />
+							<xs:element minOccurs="0" name="name" type="xs:string" />
+							<xs:element minOccurs="0" name="openedOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="phoneBusiness"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="phoneFax"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="phoneMobile1"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="phoneMobile2"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="postalAddress"
+								type="ns1:address" />
+							<xs:element minOccurs="0" name="streetAddress"
+								type="ns1:address" />
+							<xs:element minOccurs="0" name="taxNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="tradingName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="longitude"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="latitude"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="isUseNameFromPos"
+								type="xs:boolean" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="entitySpecification" nillable="true"
+								type="ns2:entitySpecification" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:ns1="http://webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://language.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="preferredLanguage">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="isoLanguageCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="countryCode"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:tns="http://identity.webservices.ifcs.fal.co.nz/"
+			xmlns:ns1="http://webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://identity.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="internetUser">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0"
+								name="logonStatusDescription" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="accessGroupDescription" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="internetUserTypeDescription" type="xs:string" />
+							<xs:element minOccurs="0" name="failedLogonCount"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="passwordCreatedOn"
+								type="xs:dateTime" />
+							<xs:element minOccurs="0" name="password"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="lastLoggedOn"
+								type="xs:dateTime" />
+							<xs:element minOccurs="0" name="privateQuestionOid"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="languageCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="languageDescription"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="isChangePasswOnNxtLogon" type="xs:string" />
+							<xs:element minOccurs="0" name="privateAnswer"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="failedAnswer"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="clientMid"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="clientName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="unencryptedPwd"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="phoneBusiness"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="phoneMobile1"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="languageOid"
+								type="xs:long" />
+							<xs:element name="logonId" type="xs:string" />
+							<xs:element minOccurs="0" name="name" type="xs:string" />
+							<xs:element minOccurs="0" name="emailAddress"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="isUserAgreeMandatoryPage" type="xs:string" />
+							<xs:element minOccurs="0" name="olsLastAgreedOn"
+								type="xs:dateTime" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="memberDetails" nillable="true" type="tns:memberDetails" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="internetPermissions" nillable="true"
+								type="tns:internetPermissions" />
+							<xs:element minOccurs="0" name="clientProcessingDate"
+								type="xs:dateTime" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="memberDetails">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="memberNo" type="xs:string" />
+							<xs:element name="memberTypeDescription"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="internetPermissions">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="description" type="xs:string" />
+							<xs:element name="accessLevelCid" type="xs:long" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:tns="http://hierarchy.webservices.ifcs.fal.co.nz/"
+			xmlns:ns2="http://report.webservices.ifcs.fal.co.nz/"
+			xmlns:ns1="http://webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://hierarchy.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://report.webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="hierarchy">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="description"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="isMerchAgreeemntAndReports" type="xs:boolean" />
+							<xs:element minOccurs="0" name="isLocation"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isCustomerReports"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isCustomerFinancial"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isFundsTransfer"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isCustomerCreditLimit"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isPeriodRebate"
+								type="xs:boolean" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="relationshipAssignments" nillable="true"
+								type="tns:relationshipAssignment" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="reportAssignments" nillable="true"
+								type="ns2:reportAssignment" />
+							<xs:element minOccurs="0" name="parentSearchNumber"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="enforceCreation"
+								type="xs:boolean" />
+							<xs:element minOccurs="0"
+								name="enforceFinancialHierarchyCreation" type="xs:boolean" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="relationshipAssignment">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="effectiveOn" type="xs:date" />
+							<xs:element name="expiresOn" type="xs:date" />
+							<xs:element minOccurs="0" name="isBillingEntity"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isBalanceEntity"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isAuthorisationEntity"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isPayerEntity"
+								type="xs:boolean" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:tns="http://financial.webservices.ifcs.fal.co.nz/"
+			xmlns:ns1="http://webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://financial.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="periodBalance">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="clientMid" type="xs:long" />
+							<xs:element name="clientName" type="xs:string" />
+							<xs:element minOccurs="0" name="customerNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="accountNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="closingBalance"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="openingBalance"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="createdOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="description"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="disputesTotal"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="dunningCode"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="dunningControl1Description" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="dunningControl2Description" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="dunningControl3Description" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="dunningControl4Description" type="xs:string" />
+							<xs:element minOccurs="0" name="overdueAmount"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="periodBalanceType"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="totalBalance"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="totalVolume"
+								type="xs:decimal" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="agedAmounts" nillable="true" type="tns:agedAmount" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="agedAmount">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0"
+								name="agingBucketDescription" type="xs:string" />
+							<xs:element minOccurs="0" name="periodBalanceType"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="amount"
+								type="xs:decimal" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="accountStatistics">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="clientMid" type="xs:long" />
+							<xs:element name="clientName" type="xs:string" />
+							<xs:element minOccurs="0" name="customerNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="accountNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="amount"
+								type="xs:decimal" />
+							<xs:element minOccurs="0"
+								name="amountStatisticDescription" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="eventStatisticDescription" type="xs:string" />
+							<xs:element minOccurs="0" name="transactionCount"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="occurredOn"
+								type="xs:date" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="detailGroup">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="clientMid" type="xs:long" />
+							<xs:element name="clientName" type="xs:string" />
+							<xs:element minOccurs="0" name="customerNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="accountNo"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="agingBucketDescription" type="xs:string" />
+							<xs:element minOccurs="0" name="periodBalanceType"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="detailGroupStatusDescription" type="xs:string" />
+							<xs:element minOccurs="0" name="billedOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="dueOn" type="xs:date" />
+							<xs:element minOccurs="0" name="originalDueOn"
+								type="xs:date" />
+							<xs:element minOccurs="0"
+								name="detailGroupTypeDescription" type="xs:string" />
+							<xs:element minOccurs="0" name="hostCreditAmount"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="hostCreditVolume"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="hostDebitAmount"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="hostDebitVolume"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="originalCreditAmount"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="originalDebitAmount"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="minimumDue"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="paidInFullOnDate"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="invoiceNumber"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="isPaidInFull"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="overdueDays"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="requestTotal"
+								type="xs:decimal" />
+							<xs:element name="paymentReference" type="xs:string" />
+							<xs:element minOccurs="0" name="isRequiredAggregate"
+								type="xs:boolean" />
+							<xs:element minOccurs="0"
+								name="billingPlanDescription" type="xs:string" />
+							<xs:element minOccurs="0" name="billingPlanExtCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="requestTotalActual"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="payerAccountNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="billingAccountNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="firstPaidOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="remittanceAmount"
+								type="xs:decimal" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:simpleType name="periodBalanceType">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="billing" />
+					<xs:enumeration value="calendarMonth" />
+					<xs:enumeration value="billing30days" />
+					<xs:enumeration value="buckets30days" />
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType name="detailGroupStatus">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="current" />
+					<xs:enumeration value="reported" />
+					<xs:enumeration value="requested" />
+					<xs:enumeration value="closed" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:ns2="http://webservices.ifcs.fal.co.nz/"
+			xmlns:ns1="http://workqueue.webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://diarynotes.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import
+				namespace="http://workqueue.webservices.ifcs.fal.co.nz/" />
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="diaryNote">
+				<xs:complexContent>
+					<xs:extension base="ns2:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="shortNote" type="xs:string" />
+							<xs:element name="detailedNote" type="xs:string" />
+							<xs:element minOccurs="0" name="bringUpAt"
+								type="xs:dateTime" />
+							<xs:element minOccurs="0" name="isHighPriority"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="workQueue"
+								type="ns1:workQueue" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:tns="http://customer.webservices.ifcs.fal.co.nz/"
+			xmlns:ns6="http://profile.webservices.ifcs.fal.co.nz/"
+			xmlns:ns5="http://taxnumbers.webservices.ifcs.fal.co.nz/"
+			xmlns:ns4="http://contact.webservices.ifcs.fal.co.nz/"
+			xmlns:ns3="http://address.webservices.ifcs.fal.co.nz/"
+			xmlns:ns2="http://account.webservices.ifcs.fal.co.nz/"
+			xmlns:ns1="http://webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://customer.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://account.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://address.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://contact.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://taxnumbers.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://profile.webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="customerProductTotalsRequest">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="clientMid" type="xs:long" />
+							<xs:element name="customerNo" type="xs:string" />
+							<xs:element minOccurs="0" name="totalCategory"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="transRebateType"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="customerProductTotalsResponse">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="clientMid" type="xs:long" />
+							<xs:element name="customerNo" type="xs:string" />
+							<xs:element maxOccurs="unbounded"
+								name="customerProductTotals" type="tns:customerProductTotal" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="customerProductTotal">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="product" type="tns:productSummary" />
+							<xs:element name="totalCategory" type="xs:string" />
+							<xs:element name="transRebateType" type="xs:string" />
+							<xs:element minOccurs="0" name="mtdQuantity"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="lmthQuantity"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="ytdQuantity"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="ltdQuantity"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="productSummary">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="description" type="xs:string" />
+							<xs:element name="isFuel" type="xs:boolean" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="searchCustomerResult">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="customers" type="tns:customers" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="customers">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element maxOccurs="unbounded" name="customer"
+								type="tns:customerWithAccountInfo" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="customerWithAccountInfo">
+				<xs:complexContent>
+					<xs:extension base="tns:customer">
+						<xs:sequence>
+							<xs:element name="blankOptionalFields"
+								type="xs:boolean" />
+							<xs:element name="account" type="ns2:account" />
+							<xs:element name="address" type="ns3:address" />
+							<xs:element minOccurs="0" name="eBillingEmailType"
+								type="xs:string" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="entitySpecification" nillable="true"
+								type="ns1:entitySpecification" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="customer">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="customerMid" type="xs:long" />
+							<xs:element name="customerNo" type="xs:string" />
+							<xs:element name="clientMid" type="xs:long" />
+							<xs:element name="clientName" type="xs:string" />
+							<xs:element name="cardProgramOid" type="xs:long" />
+							<xs:element name="name" type="xs:string" />
+							<xs:element name="tradingName" type="xs:string" />
+							<xs:element name="emailAddress" type="xs:string" />
+							<xs:element minOccurs="0" name="billingContact"
+								type="ns4:contact" />
+							<xs:element name="phoneBusiness" type="xs:string" />
+							<xs:element name="phoneFax" type="xs:string" />
+							<xs:element name="phoneMobile1" type="xs:string" />
+							<xs:element name="phoneMobile2" type="xs:string" />
+							<xs:element name="extDeliveryRef" type="xs:string" />
+							<xs:element name="extDeliveryName" type="xs:string" />
+							<xs:element name="externalAccountNumber"
+								type="xs:string" />
+							<xs:element name="externalAccountId" type="xs:string" />
+							<xs:element name="businessType" type="xs:string" />
+							<xs:element name="creditLimit" type="xs:decimal" />
+							<xs:element name="languageCode" type="xs:string" />
+							<xs:element name="currencyCode" type="xs:string" />
+							<xs:element name="buyerClass" type="xs:string" />
+							<xs:element name="financialYearEndMonth"
+								type="xs:string" />
+							<xs:element name="percentBusinessHeld" type="xs:int" />
+							<xs:element name="businessCommencedOn"
+								type="xs:dateTime" />
+							<xs:element name="externalCustomerCode"
+								type="xs:string" />
+							<xs:element name="taxNumber" type="xs:string" />
+							<xs:element name="embossingName" type="xs:string" />
+							<xs:element name="couponCode" type="xs:string" />
+							<xs:element name="noOfVehicles" type="xs:string" />
+							<xs:element name="noOfCards" type="xs:string" />
+							<xs:element name="contactTitle" type="xs:string" />
+							<xs:element name="contactName" type="xs:string" />
+							<xs:element name="contactNeededOn" type="xs:string" />
+							<xs:element name="customerType" type="xs:string" />
+							<xs:element name="industryCode" type="xs:string" />
+							<xs:element name="industryDesc" nillable="true"
+								type="xs:string" />
+							<xs:element name="cardProgramDescription"
+								type="xs:string" />
+							<xs:element name="adminTerritoryDescription"
+								type="xs:string" />
+							<xs:element name="adminTerritoryCode" type="xs:string" />
+							<xs:element name="marketingTerritoryDescription"
+								type="xs:string" />
+							<xs:element name="marketingTerritoryCode"
+								type="xs:string" />
+							<xs:element name="cardReissueProfileOid"
+								type="xs:string" />
+							<xs:element name="companyNo" type="xs:string" />
+							<xs:element name="externalAccountRef" type="xs:string" />
+							<xs:element minOccurs="0" name="detailedNote"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="maxCardExpiryDate"
+								type="xs:date" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="customerWithAdditionalInfo">
+				<xs:complexContent>
+					<xs:extension base="tns:customer">
+						<xs:sequence>
+							<xs:element name="account" type="ns2:account" />
+							<xs:element name="address" type="ns3:address" />
+							<xs:element name="taxNumbers" type="ns5:taxNumbers" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="accountStatuses">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="accountNumber" type="xs:string" />
+							<xs:element name="accountExemptedOverdueAutoLock"
+								type="xs:string" />
+							<xs:element name="accountStatus"
+								type="ns2:accountStatus" />
+							<xs:element name="accountPreviousStatus"
+								type="ns2:accountStatus" />
+							<xs:element name="accountSubStatus"
+								type="ns2:accountStatus" />
+							<xs:element name="accountPreviousSubStatus"
+								type="ns2:accountStatus" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="cardControlProfileDTO">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="customerNo" type="xs:string" />
+							<xs:element minOccurs="0" name="clientMid"
+								type="xs:long" />
+							<xs:element maxOccurs="unbounded"
+								name="cardControlProfileVO" type="ns6:cardControlProfile" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="customerPinOffset">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="clientMid" type="xs:long" />
+							<xs:element name="customerNo" type="xs:string" />
+							<xs:element default="PIN_ACTION_USER_ENTERED_PIN"
+								name="pinAction" type="xs:string" />
+							<xs:element name="pinOffset" type="xs:string" />
+							<xs:element minOccurs="0" name="pinOption"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="accountSpecCharacteristic">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="clientMid" type="xs:long" />
+							<xs:element name="clientName" type="xs:string" />
+							<xs:element name="customerNo" type="xs:string" />
+							<xs:element maxOccurs="unbounded"
+								name="entitySpecification" type="ns1:entitySpecification" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="customerSpecCharacteristic">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="clientMid" type="xs:long" />
+							<xs:element name="clientName" type="xs:string" />
+							<xs:element name="customerNo" type="xs:string" />
+							<xs:element maxOccurs="unbounded"
+								name="entitySpecification" type="ns1:entitySpecification" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="customerCardProduct">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="customerNo" type="xs:string" />
+							<xs:element name="clientMid" type="xs:long" />
+							<xs:element name="cardOfferDescription"
+								type="xs:string" />
+							<xs:element name="extEmbosserCustomerRef"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="customerCostCentre">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="customerNo" type="xs:string" />
+							<xs:element name="externalDeliveryRef"
+								type="xs:string" />
+							<xs:element name="clientName" type="xs:string" />
+							<xs:element name="clientMid" type="xs:long" />
+							<xs:element name="cardNo" type="xs:string" />
+							<xs:element name="customerCostCentreCode"
+								type="xs:string" />
+							<xs:element name="description" type="xs:string" />
+							<xs:element name="shortDescription" type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:ns2="http://webservices.ifcs.fal.co.nz/"
+			xmlns:ns1="http://address.webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://contact.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import
+				namespace="http://address.webservices.ifcs.fal.co.nz/" />
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="contact">
+				<xs:complexContent>
+					<xs:extension base="ns2:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="contactTypeDesc" type="xs:string" />
+							<xs:element name="contactName" type="xs:string" />
+							<xs:element name="contactTitle" type="xs:string" />
+							<xs:element name="emailAddress" type="xs:string" />
+							<xs:element name="phoneBusiness" type="xs:string" />
+							<xs:element minOccurs="0" name="phoneFax"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="phoneMobile1"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="phoneMobile2"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="isDefault"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="address"
+								type="ns1:address" />
+							<xs:element minOccurs="0" name="memberType"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="contactTypeExtCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="gender"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="birthDate"
+								type="xs:date" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:tns="http://card.webservices.ifcs.fal.co.nz/"
+			xmlns:ns5="http://profile.webservices.ifcs.fal.co.nz/"
+			xmlns:ns4="http://customer.webservices.ifcs.fal.co.nz/"
+			xmlns:ns3="http://contact.webservices.ifcs.fal.co.nz/"
+			xmlns:ns2="http://address.webservices.ifcs.fal.co.nz/"
+			xmlns:ns1="http://webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://card.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://address.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://contact.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://customer.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://profile.webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="cardNumberSeries">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="seriesNumber" type="xs:long" />
+							<xs:element name="sequenceNumber" type="xs:long" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="driver">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="driverId"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="driverName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="shortName"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="cardContact">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="contactTitle"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="contactName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="emailAddress"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="phoneMobile1"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="phoneBusiness"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="address"
+								type="ns2:address" />
+							<xs:element minOccurs="0" name="streetAddressVO"
+								type="ns2:addressDTO" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="card">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="authorisedBalance"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="balance"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="cardNo"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="olsCardStatusDescription" type="ns1:oidDescription" />
+							<xs:element minOccurs="0" name="cardStatusDescription"
+								type="ns1:oidDescription" />
+							<xs:element minOccurs="0" name="cardStatusCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="cardStatusAt"
+								type="xs:dateTime" />
+							<xs:element minOccurs="0" name="cardTypeCid"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="cardTypeDescription"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="cvvSecurityCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="driverName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="licensePlate"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="embossLine1"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="embossLine2"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="embossLine3"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="embossLine4"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="embossLine5"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="embossingName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="additionalEmbossData"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="cardGroupDescription"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="contactlessPmtModifiedOn" type="xs:date" />
+							<xs:element minOccurs="0"
+								name="excludeFromBulkReissue" type="xs:boolean" />
+							<xs:element minOccurs="0" name="expiresOn"
+								type="xs:dateTime" />
+							<xs:element minOccurs="0" name="externalRef"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="initialLoadValue"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="contactlessPayment"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isManuallyProduced"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isPinReq"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isSignatureReq"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isRucPurchaseCard"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isRucReprintOnly"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="issuedOn"
+								type="xs:dateTime" />
+							<xs:element minOccurs="0" name="lastTransactionOn"
+								type="xs:dateTime" />
+							<xs:element minOccurs="0" name="lastExportedInCafAt"
+								type="xs:dateTime" />
+							<xs:element minOccurs="0" name="orderMethod"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="orderReference"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="pinOffset"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="confirmPinOffset"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="pinOffsetChangedAt"
+								type="xs:dateTime" />
+							<xs:element minOccurs="0" name="pinRetries"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="pinOptionCid"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="previousCardNumber"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="replaceCardNumber"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="replacedAt"
+								type="xs:dateTime" />
+							<xs:element minOccurs="0" name="requestedBy"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="requestedPhone"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="taxCredit"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="totalSpend"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="reportEmailAddress"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="CvvExpiryDate"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="Cvki" type="xs:string" />
+							<xs:element minOccurs="0" name="Pvv" type="xs:string" />
+							<xs:element minOccurs="0" name="Pvki" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="pumpControlDescription" type="ns1:oidDescription" />
+							<xs:element minOccurs="0" name="costCentreVO"
+								type="tns:costCentre" />
+							<xs:element minOccurs="0"
+								name="synchronizeCustomersAccountStatus" type="xs:boolean" />
+							<xs:element minOccurs="0" name="amountToSpendBalance"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="currencyCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="currencyDescription"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="lastUpdatedBy"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="clientMid"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="customerNumber"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="pinOptionDescription"
+								type="ns1:oidDescription" />
+							<xs:element minOccurs="0" name="pinFromCustomerNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="versionNumber"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="mailIndicatorDescription" type="xs:string" />
+							<xs:element minOccurs="0" name="InitialValue"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="isBalanceAllowed"
+								type="xs:boolean" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="costCentre">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="effectiveOn" type="xs:dateTime" />
+							<xs:element name="expiresOn" type="xs:dateTime" />
+							<xs:element name="customerCostCentreCode"
+								type="xs:string" />
+							<xs:element name="description" type="xs:string" />
+							<xs:element name="shortDescription" type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="extendedCardDetails">
+				<xs:complexContent>
+					<xs:extension base="tns:card">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="cardControls"
+								type="tns:cardControls" />
+							<xs:element minOccurs="0" name="vehicle"
+								type="tns:vehicle" />
+							<xs:element minOccurs="0" name="driver"
+								type="tns:driver" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="cardControls">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="productRestriction"
+								type="tns:productRestriction" />
+							<xs:element minOccurs="0" name="timeLimit"
+								type="tns:timeLimit" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="velocityControls" nillable="true"
+								type="tns:velocityControl" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="productRestriction">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="description"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="productRestrictionCode" type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="timeLimit">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="description"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="timeLimitCode"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="velocityControl">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="description"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="externalCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="value"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="valueDescription"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="vehicle">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="vehicleId"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="licensePlate"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="description"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="currentOdoReading"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="currentOdoEffectiveAt"
+								type="xs:dateTime" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="cardSearchFilter">
+				<xs:complexContent>
+					<xs:extension base="ns1:dataPageRequest">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="cardNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="vehicleRegistration"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="driverName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="costCentre"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="customerNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="validCardsOnly"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="fuzzySearchString"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="cardStatusOlsDesc"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="clientMid"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="customerMid"
+								type="xs:long" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="cardSearchResult">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="noOfCards"
+								type="xs:long" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="cards" nillable="true" type="tns:card" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="cardMaintRequestDTO">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="cardNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="isHighPriority"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isPinMailerOnlyReqd"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isIssueFeeCharged"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="lastUpdatedBy"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="issuedBy"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="orderCardDetails">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="customerNumber"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="cardTypeCid"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="refNumber"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="embossName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="prodRestriction"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="driverName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="vehicleDesc"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="regoNumber"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="tempContactTitle"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="tempContactName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="tempContactAddress"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="tempContactEmailAddress" type="xs:string" />
+							<xs:element minOccurs="0" name="tempContactState"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="tempContactPostCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="tempContactSuburb"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="tempContactPhone"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="tempContactMobile"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="tempContactCountry"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="ifcsCardNumber"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="orderCardBaseDTO">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="clientMid"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="bypassValidationRules"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="customerVO"
+								type="ns4:customer" />
+							<xs:element name="cardProductVO"
+								type="ns5:cardProduct" />
+							<xs:element minOccurs="0" name="cardVO"
+								type="tns:card" />
+							<xs:element minOccurs="0" name="vehicleVO"
+								type="tns:vehicle" />
+							<xs:element minOccurs="0" name="driverVO"
+								type="tns:driver" />
+							<xs:element minOccurs="0" name="cardContactVO"
+								type="tns:cardContact" />
+							<xs:element minOccurs="0" name="permCardContactVO"
+								type="tns:cardContact" />
+							<xs:element minOccurs="0" name="companyEmbossName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="extraEmbossLine"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="cardReissueReq"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="replaceCardNumber"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="costCentreCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="customerWallet"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="cardControlProfileVO"
+								type="ns5:cardControlProfile" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="orderCardDTO">
+				<xs:complexContent>
+					<xs:extension base="tns:orderCardBaseDTO">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="customerNumber"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="clientName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="externalDeliveryRef"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="externalDeliveryName"
+								type="xs:string" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="cardStatusLogs" nillable="true" type="tns:cardStatusLog" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="cardStatusLog">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="cardNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="cardStatusDescription"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="cardStatusExternalCode" type="xs:string" />
+							<xs:element minOccurs="0" name="effectiveAt"
+								type="xs:dateTime" />
+							<xs:element minOccurs="0" name="expiresAt"
+								type="xs:dateTime" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="cardStatusDTO">
+				<xs:complexContent>
+					<xs:extension base="tns:cardStatusLog">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="clientMid"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="customerNumber"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="orderCardMobile">
+				<xs:complexContent>
+					<xs:extension base="tns:orderCardBaseDTO">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="customerNumber"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="clientName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="externalDeliveryRef"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="externalDeliveryName"
+								type="xs:string" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="cardStatusLogs" nillable="true" type="tns:cardStatusLog" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="orderCardMobileResponse">
+				<xs:complexContent>
+					<xs:extension base="tns:orderCardBaseDTO">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="customerNumber"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="clientName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="externalDeliveryRef"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="externalDeliveryName"
+								type="xs:string" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="cardStatusLogs" nillable="true" type="tns:cardStatusLog" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="cardIeEmbossFileName">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="cardNo" nillable="true" type="xs:string" />
+							<xs:element name="fileId" type="xs:string" />
+							<xs:element name="cardIeEmbossFileName"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="cardStatusOlsLog">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="clientMid"
+								type="xs:long" />
+							<xs:element minOccurs="0"
+								name="cardStatusOlsDescription" type="xs:string" />
+							<xs:element minOccurs="0" name="cardStatusLog"
+								type="tns:cardStatusLog" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="lookupCardRequest">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="cardNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="clientMid"
+								type="xs:long" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:tns="http://bjr.webservices.ifcs.fal.co.nz/"
+			xmlns:ns1="http://webservices.ifcs.fal.co.nz/"
+			targetNamespace="http://bjr.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="Job">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element form="qualified" name="jobKey"
+								type="xs:string" />
+							<xs:element form="qualified" name="clientMid"
+								type="xs:int" />
+							<xs:element form="qualified" name="corollaryId"
+								type="xs:string" />
+							<xs:element form="qualified" minOccurs="0"
+								name="callbackURL" type="xs:string" />
+							<xs:element form="qualified" maxOccurs="unbounded"
+								minOccurs="0" name="attributes" nillable="true"
+								type="tns:Attribute" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="Attribute">
+				<xs:sequence>
+					<xs:element form="qualified" name="Name"
+						type="xs:string" />
+					<xs:element form="qualified" name="Value"
+						type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="JobResponse">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element form="qualified" name="jobStreamName"
+								type="xs:string" />
+							<xs:element form="qualified" name="systemDate"
+								type="xs:string" />
+							<xs:element form="qualified" name="clientMid"
+								type="xs:int" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:ns1="http://bjr.webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://batch.webservices.ifcs.fal.co.nz/BatchJobRunner/"
+			version="1.0">
+			<xs:import
+				namespace="http://bjr.webservices.ifcs.fal.co.nz/" />
+			<xs:element name="isPreviousDayMonthEnd">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="clientMid" type="xs:long" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="isPreviousDayMonthEndResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="response" type="xs:boolean" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="jobFailedFault">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="message" type="xs:string" />
+						<xs:element name="response" type="ns1:JobResponse" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="runJob">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="job" type="ns1:Job" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="runJobAsnc">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="job" type="ns1:Job" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="runJobAsncResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="response" type="ns1:JobResponse" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="runJobResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="response" type="ns1:JobResponse" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:tns="http://application.webservices.ifcs.fal.co.nz/"
+			xmlns:ns9="http://hierarchy.webservices.ifcs.fal.co.nz/"
+			xmlns:ns8="http://identity.webservices.ifcs.fal.co.nz/"
+			xmlns:ns7="http://rebate.webservices.ifcs.fal.co.nz/"
+			xmlns:ns6="http://pricing.webservices.ifcs.fal.co.nz/"
+			xmlns:ns5="http://contact.webservices.ifcs.fal.co.nz/"
+			xmlns:ns4="http://address.webservices.ifcs.fal.co.nz/"
+			xmlns:ns3="http://account.webservices.ifcs.fal.co.nz/"
+			xmlns:ns2="http://webservices.ifcs.fal.co.nz/"
+			xmlns:ns16="http://language.webservices.ifcs.fal.co.nz/"
+			xmlns:ns15="http://taxnumbers.webservices.ifcs.fal.co.nz/"
+			xmlns:ns14="http://subscription.webservices.ifcs.fal.co.nz/"
+			xmlns:ns13="http://diarynotes.webservices.ifcs.fal.co.nz/"
+			xmlns:ns12="http://workqueue.webservices.ifcs.fal.co.nz/"
+			xmlns:ns11="http://card.webservices.ifcs.fal.co.nz/"
+			xmlns:ns10="http://report.webservices.ifcs.fal.co.nz/"
+			xmlns:ns1="http://profile.webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://application.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import
+				namespace="http://profile.webservices.ifcs.fal.co.nz/" />
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://account.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://address.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://contact.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://pricing.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://rebate.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://identity.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://hierarchy.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://report.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://card.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://workqueue.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://diarynotes.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://subscription.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://taxnumbers.webservices.ifcs.fal.co.nz/" />
+			<xs:import
+				namespace="http://language.webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="rebateOptInOut">
+				<xs:complexContent>
+					<xs:extension base="ns2:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="clientMid" type="xs:long" />
+							<xs:element name="clientName" type="xs:string" />
+							<xs:element name="customerNo" type="xs:string" />
+							<xs:element maxOccurs="unbounded"
+								name="rebateOutOptions" type="tns:rebateOutOption" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="rebateOutOption">
+				<xs:complexContent>
+					<xs:extension base="ns2:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="rebateProfile" type="ns1:profile" />
+							<xs:element name="isRebateProfileOptedOut"
+								type="xs:boolean" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="applicationWithAdditionalInfo">
+				<xs:complexContent>
+					<xs:extension base="tns:application">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="account"
+								type="ns3:account" />
+							<xs:element minOccurs="0"
+								name="applicationBankAccount" type="ns3:bankAccount" />
+							<xs:element name="address" type="ns4:address" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="contacts" nillable="true" type="ns5:contact" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="cardControlProfiles" nillable="true"
+								type="ns1:cardControlProfile" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="cardReissueProfiles" nillable="true"
+								type="ns1:cardReissueProfile" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="feeProfiles" nillable="true" type="ns1:feeProfile" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="pricingProfiles" nillable="true" type="ns1:pricingProfile" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="rebateProfiles" nillable="true" type="ns1:rebateProfile" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="accountControlProfiles" nillable="true"
+								type="ns1:accountControlProfile" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="onlineUsers" nillable="true" type="ns8:internetUser" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="hierarchies" nillable="true" type="ns9:hierarchy" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="reportAssignments" nillable="true"
+								type="ns10:reportAssignment" />
+							<xs:element minOccurs="0" name="defaultRepDelTypeDesc"
+								type="xs:string" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="applicationCardOffers" nillable="true"
+								type="tns:applicationCardOffer" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="cardNumberSeries" nillable="true"
+								type="ns11:cardNumberSeries" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="diaryNotes" nillable="true" type="ns13:diaryNote" />
+							<xs:element name="createOnlineAccess"
+								type="xs:boolean" />
+							<xs:element minOccurs="0"
+								name="onlineAccessSubscription" type="ns14:subscription" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="taxNumbers" nillable="true" type="ns15:taxNumbers" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="taxStatus" nillable="true" type="ns15:taxStatus" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="defaultPricingProfiles" nillable="true"
+								type="ns1:defaultPricingProfile" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="rebateOutOptions" nillable="true"
+								type="tns:rebateOutOption" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="entitySpecification" nillable="true"
+								type="ns2:entitySpecification" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="application">
+				<xs:complexContent>
+					<xs:extension base="ns2:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="clientMid" type="xs:long" />
+							<xs:element name="clientName" type="xs:string" />
+							<xs:element name="couponCode" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="alertThresholdPercentage" type="xs:int" />
+							<xs:element minOccurs="0"
+								name="adminTerritoryDescription" type="xs:string" />
+							<xs:element minOccurs="0" name="applicationNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="applicationTypeDesc"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="customerType"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="customerTypeExtCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="receivedOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="billingPlan"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="billingPlanExtCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="billingFrequencyDesc"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="billingFrequencyExtCode" type="xs:string" />
+							<xs:element minOccurs="0" name="cycleFrequencyDesc"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="businessType"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="businessTypeExtCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="bankGuaranteeAmount"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="buyerClass"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="cardRequired"
+								type="xs:int" />
+							<xs:element minOccurs="0" name="contactName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="companyNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="contactTitle"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="creditLimit"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="creditPlanDesc"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="currencyCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="currentSupplier"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="customerNumber"
+								type="xs:string" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="customerValues" nillable="true" type="tns:customerValue" />
+							<xs:element minOccurs="0" name="emailAddress"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="embossingName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="externalAccountId"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="externalAccountRef"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="externalDeliveryRef"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="externalDeliveryName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="externalCustomerCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="financialYearEndMonth"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="glChannelDesc"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="glCostCentreCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="industryDesc"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="industryCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="isBankOpinion"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isCardSystemOnly"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isCheckCompleted"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isDirectorsCheque"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isDirectorsGuarantee"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isDunnBradstreetCheck"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isFinancialReference"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isIncorporationCert"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isPinRequired"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isPromotionalMaterial"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isRiskAssessment"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isSecurityHeld"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isSignatureRequired"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isTradeReference"
+								type="xs:boolean" />
+							<xs:element minOccurs="0"
+								name="isUsingElectronicMarketing" type="xs:boolean" />
+							<xs:element minOccurs="0"
+								name="isUsingElectronicReporting" type="xs:boolean" />
+							<xs:element minOccurs="0" name="isWebAccessRequired"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isTrustee"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="isTrustDeedReceived"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="languageCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="languageDescription"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="lastCardSequenceUsed"
+								type="xs:long" />
+							<xs:element minOccurs="0" name="mailIndicatiorDesc"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="marketingTerritoryDescription" type="xs:string" />
+							<xs:element minOccurs="0" name="name" type="xs:string" />
+							<xs:element minOccurs="0" name="phoneBusiness"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="phoneFax"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="phoneMobile1"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="phoneMobile2"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="pumpControlDesc"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="tradingName"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="taxNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="parentCompany"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="riskGradeExtCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="riskGradeDescription"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="behaviouralScore"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="businessCommencedOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="speedPassIndicator"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="territoriesDepartment"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="externalApplicationRef" type="xs:string" />
+							<xs:element minOccurs="0" name="securityIndicator"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="totalSecurityValue"
+								type="xs:decimal" />
+							<xs:element minOccurs="0"
+								name="isClientSecurityDeposit" type="xs:boolean" />
+							<xs:element minOccurs="0"
+								name="isResetClientSecurityDeposit" type="xs:boolean" />
+							<xs:element minOccurs="0" name="tradeExposureLimit"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="parentCompanyNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="embassyCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="isoLanguageCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="preferredLanguage"
+								type="ns16:preferredLanguage" />
+							<xs:element minOccurs="0" name="enquirySourceExtCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="isTaxExempt"
+								type="xs:boolean" />
+							<xs:element minOccurs="0" name="maxCardExpiryDate"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="pinOptionDescription"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="apAccountCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="contraAccountCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="mainBusiness"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="gender"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="birthDate"
+								type="xs:date" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="applicationCardOffer">
+				<xs:complexContent>
+					<xs:extension base="ns2:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="cardOfferDescription"
+								type="xs:string" />
+							<xs:element name="cardProduct" type="ns1:cardProduct" />
+							<xs:element name="initialCardStatusDescription"
+								type="xs:string" />
+							<xs:element name="isCardInitialCardStatusOverride"
+								type="xs:boolean" />
+							<xs:element name="isCardReqValidationRule"
+								type="xs:boolean" />
+							<xs:element name="extEmbosserCustomerRef"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="customerValue">
+				<xs:sequence>
+					<xs:element name="customerValueNo" type="xs:string" />
+					<xs:element name="customerValueDesc" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="applicationType">
+				<xs:complexContent>
+					<xs:extension base="ns2:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="description" type="xs:string" />
+							<xs:element name="applicationTypeOid" type="xs:long" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:tns="http://address.webservices.ifcs.fal.co.nz/"
+			xmlns:ns1="http://webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://address.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="address">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="country"
+								type="tns:country" />
+							<xs:element minOccurs="0" name="addressLine1"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="addressLine2"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="addressLine3"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="addressLine4"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="addressLine5"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="state"
+								type="tns:state" />
+							<xs:element minOccurs="0" name="postalCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="suburb"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="postalCountry"
+								type="tns:country" />
+							<xs:element minOccurs="0" name="postalAddressLine1"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="postalAddressLine2"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="postalAddressLine3"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="postalAddressLine4"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="postalAddressLine5"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="postalState"
+								type="tns:state" />
+							<xs:element minOccurs="0" name="postalPostalCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="postalSuburb"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="country">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="countryCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="description"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="state">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="description"
+						type="xs:string" />
+					<xs:element minOccurs="0" name="shortDescription"
+						type="xs:string" />
+					<xs:element minOccurs="0" name="externalCode"
+						type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="addressDTO">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="addressLine"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="stateDescription"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="countryCode"
+								type="ns1:oidDescription" />
+							<xs:element minOccurs="0" name="postalCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="suburb"
+								type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+		</xs:schema>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:tns="http://account.webservices.ifcs.fal.co.nz/"
+			xmlns:ns1="http://webservices.ifcs.fal.co.nz/"
+			elementFormDefault="qualified"
+			targetNamespace="http://account.webservices.ifcs.fal.co.nz/"
+			version="1.0">
+			<xs:import namespace="http://webservices.ifcs.fal.co.nz/" />
+			<xs:complexType name="bankAccount">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="bankNo" type="xs:string" />
+							<xs:element name="bankName" type="xs:string" />
+							<xs:element name="bankBranchNo" type="xs:string" />
+							<xs:element name="bankAccountNo" type="xs:string" />
+							<xs:element name="bankAccountName" type="xs:string" />
+							<xs:element name="createdOn" type="xs:date" />
+							<xs:element name="letterOn" type="xs:date" />
+							<xs:element name="bic" type="xs:string" />
+							<xs:element name="swiftCode" type="xs:string" />
+							<xs:element name="iban" type="xs:string" />
+							<xs:element name="umrNo" type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="account">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="accountNo"
+								type="xs:string" />
+							<xs:element name="actualBalance" type="xs:string" />
+							<xs:element minOccurs="0" name="creditLimit"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="depositBalance"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="externalAccountCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="lastPaymentMadeOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="lastPaymentAmount"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="lastBilledOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="lastBilledAmount"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="creditCard"
+								type="tns:creditCard" />
+							<xs:element minOccurs="0" name="openedOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="reinstatedOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="riskGradeExtCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="riskGradeDescription"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="securityIndicator"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="totalSecurityValue"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="tradeExposureLimit"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="closedOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="accountStatusDesc"
+								type="xs:string" />
+							<xs:element maxOccurs="unbounded" minOccurs="0"
+								name="accountStatusLogs" nillable="true"
+								type="tns:accountStatusLog" />
+							<xs:element minOccurs="0" name="taxNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="tempCreditAmount"
+								type="xs:string" />
+							<xs:element minOccurs="0"
+								name="tempCreditReasonDescription" type="xs:string" />
+							<xs:element minOccurs="0" name="tempCreditExpiresOn"
+								type="xs:date" />
+							<xs:element minOccurs="0" name="behaviouralScore"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="accountStatus"
+								type="tns:accountStatus" />
+							<xs:element minOccurs="0" name="bankAccount"
+								type="tns:bankAccount" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="creditCard">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="creditCardName"
+								type="xs:string" />
+							<xs:element name="creditCardTokenNumber"
+								type="xs:string" />
+							<xs:element name="creditCardLastFourDigits"
+								type="xs:string" />
+							<xs:element name="creditCardExpiresOn" type="xs:date" />
+							<xs:element name="creditCardType" type="xs:string" />
+							<xs:element minOccurs="0"
+								name="creditCardReferenceNumber" type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="accountStatusLog">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="accountStatusCode" type="xs:string" />
+							<xs:element name="accountStatusDesc" type="xs:string" />
+							<xs:element name="accountSubStatusDesc"
+								type="xs:string" />
+							<xs:element name="effectiveAt" type="xs:dateTime" />
+							<xs:element name="expiresAt" type="xs:dateTime" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="accountStatus">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element name="description" type="xs:string" />
+							<xs:element name="externalCode" type="xs:string" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+			<xs:complexType name="creditCardPaymentDetails">
+				<xs:complexContent>
+					<xs:extension base="ns1:baseTransferObject">
+						<xs:sequence>
+							<xs:element minOccurs="0" name="reasonCode"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="decision"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="reference"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="amount"
+								type="xs:decimal" />
+							<xs:element minOccurs="0" name="accountNo"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="cardType"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="processedBy"
+								type="xs:string" />
+							<xs:element minOccurs="0" name="clientMid"
+								type="xs:long" />
+							<xs:element default="false" minOccurs="0"
+								name="updateStatus" type="xs:boolean" />
+						</xs:sequence>
+					</xs:extension>
+				</xs:complexContent>
+			</xs:complexType>
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:message name="uploadInternetUser">
+		<wsdl:part element="tns:uploadInternetUser"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadApprovedApplicationResponse">
+		<wsdl:part element="tns:uploadApprovedApplicationResponse"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadRebateOutOption">
+		<wsdl:part element="tns:uploadRebateOutOption"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadAccountStatisticsResponse">
+		<wsdl:part element="tns:uploadAccountStatisticsResponse"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadAccountStatistics">
+		<wsdl:part element="tns:uploadAccountStatistics"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadApprovedApplication">
+		<wsdl:part element="tns:uploadApprovedApplication"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadMerchantResponse">
+		<wsdl:part element="tns:uploadMerchantResponse"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadLocation">
+		<wsdl:part element="tns:uploadLocation" name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadInternetUserResponse">
+		<wsdl:part element="tns:uploadInternetUserResponse"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadInvoicePaymentResponse">
+		<wsdl:part element="tns:uploadInvoicePaymentResponse"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadProfile">
+		<wsdl:part element="tns:uploadProfile" name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadMerchantAgreementResponse">
+		<wsdl:part element="tns:uploadMerchantAgreementResponse"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadSubscriptionResponse">
+		<wsdl:part element="tns:uploadSubscriptionResponse"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadMerchantAgreement">
+		<wsdl:part element="tns:uploadMerchantAgreement"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadPeriodBalanceResponse">
+		<wsdl:part element="tns:uploadPeriodBalanceResponse"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadPeriodBalance">
+		<wsdl:part element="tns:uploadPeriodBalance"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadRebateOutOptionResponse">
+		<wsdl:part element="tns:uploadRebateOutOptionResponse"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadProfileResponse">
+		<wsdl:part element="tns:uploadProfileResponse"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadMerchant">
+		<wsdl:part element="tns:uploadMerchant" name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadLocationResponse">
+		<wsdl:part element="tns:uploadLocationResponse"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadInvoicePayment">
+		<wsdl:part element="tns:uploadInvoicePayment"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="uploadSubscription">
+		<wsdl:part element="tns:uploadSubscription"
+			name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:portType name="OnboardingService">
+		<wsdl:operation name="uploadLocation">
+			<wsdl:input message="tns:uploadLocation"
+				name="uploadLocation">
+			</wsdl:input>
+			<wsdl:output message="tns:uploadLocationResponse"
+				name="uploadLocationResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadInternetUser">
+			<wsdl:input message="tns:uploadInternetUser"
+				name="uploadInternetUser">
+			</wsdl:input>
+			<wsdl:output message="tns:uploadInternetUserResponse"
+				name="uploadInternetUserResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadProfile">
+			<wsdl:input message="tns:uploadProfile"
+				name="uploadProfile">
+			</wsdl:input>
+			<wsdl:output message="tns:uploadProfileResponse"
+				name="uploadProfileResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadMerchantAgreement">
+			<wsdl:input message="tns:uploadMerchantAgreement"
+				name="uploadMerchantAgreement">
+			</wsdl:input>
+			<wsdl:output
+				message="tns:uploadMerchantAgreementResponse"
+				name="uploadMerchantAgreementResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadRebateOutOption">
+			<wsdl:input message="tns:uploadRebateOutOption"
+				name="uploadRebateOutOption">
+			</wsdl:input>
+			<wsdl:output message="tns:uploadRebateOutOptionResponse"
+				name="uploadRebateOutOptionResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadPeriodBalance">
+			<wsdl:input message="tns:uploadPeriodBalance"
+				name="uploadPeriodBalance">
+			</wsdl:input>
+			<wsdl:output message="tns:uploadPeriodBalanceResponse"
+				name="uploadPeriodBalanceResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadAccountStatistics">
+			<wsdl:input message="tns:uploadAccountStatistics"
+				name="uploadAccountStatistics">
+			</wsdl:input>
+			<wsdl:output
+				message="tns:uploadAccountStatisticsResponse"
+				name="uploadAccountStatisticsResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadMerchant">
+			<wsdl:input message="tns:uploadMerchant"
+				name="uploadMerchant">
+			</wsdl:input>
+			<wsdl:output message="tns:uploadMerchantResponse"
+				name="uploadMerchantResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadApprovedApplication">
+			<wsdl:input message="tns:uploadApprovedApplication"
+				name="uploadApprovedApplication">
+			</wsdl:input>
+			<wsdl:output
+				message="tns:uploadApprovedApplicationResponse"
+				name="uploadApprovedApplicationResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadInvoicePayment">
+			<wsdl:input message="tns:uploadInvoicePayment"
+				name="uploadInvoicePayment">
+			</wsdl:input>
+			<wsdl:output message="tns:uploadInvoicePaymentResponse"
+				name="uploadInvoicePaymentResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadSubscription">
+			<wsdl:input message="tns:uploadSubscription"
+				name="uploadSubscription">
+			</wsdl:input>
+			<wsdl:output message="tns:uploadSubscriptionResponse"
+				name="uploadSubscriptionResponse">
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding
+		name="OnboardingServiceImplServiceSoapBinding"
+		type="tns:OnboardingService">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="uploadLocation">
+			<soap:operation soapAction="uploadLocation"
+				style="document" />
+			<wsdl:input name="uploadLocation">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="uploadLocationResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadInternetUser">
+			<soap:operation soapAction="uploadInternetUser"
+				style="document" />
+			<wsdl:input name="uploadInternetUser">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="uploadInternetUserResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadProfile">
+			<soap:operation soapAction="uploadProfile"
+				style="document" />
+			<wsdl:input name="uploadProfile">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="uploadProfileResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadMerchantAgreement">
+			<soap:operation soapAction="uploadMerchantAgreement"
+				style="document" />
+			<wsdl:input name="uploadMerchantAgreement">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="uploadMerchantAgreementResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadRebateOutOption">
+			<soap:operation soapAction="uploadRebateOutOption"
+				style="document" />
+			<wsdl:input name="uploadRebateOutOption">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="uploadRebateOutOptionResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadPeriodBalance">
+			<soap:operation soapAction="uploadPeriodBalance"
+				style="document" />
+			<wsdl:input name="uploadPeriodBalance">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="uploadPeriodBalanceResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadAccountStatistics">
+			<soap:operation soapAction="uploadAccountStatistics"
+				style="document" />
+			<wsdl:input name="uploadAccountStatistics">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="uploadAccountStatisticsResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadMerchant">
+			<soap:operation soapAction="uploadMerchant"
+				style="document" />
+			<wsdl:input name="uploadMerchant">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="uploadMerchantResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadApprovedApplication">
+			<soap:operation soapAction="uploadApprovedApplication"
+				style="document" />
+			<wsdl:input name="uploadApprovedApplication">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="uploadApprovedApplicationResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadInvoicePayment">
+			<soap:operation soapAction="uploadInvoicePayment"
+				style="document" />
+			<wsdl:input name="uploadInvoicePayment">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="uploadInvoicePaymentResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="uploadSubscription">
+			<soap:operation soapAction="uploadSubscription"
+				style="document" />
+			<wsdl:input name="uploadSubscription">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="uploadSubscriptionResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="OnboardingServiceImplService">
+		<wsdl:port
+			binding="tns:OnboardingServiceImplServiceSoapBinding"
+			name="OnboardingServiceImplPort">
+			<soap:address
+				location="http://CSiyasinghe:8080/IFCSServiceDelegates/OnboardingService" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
